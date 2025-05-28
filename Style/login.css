@@ -1,0 +1,616 @@
+#login{
+    min-height: calc(100vh - 150px);
+    width: 100%;
+    /* margin-top: 150px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+#login .container{
+    width: 500px;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+}
+}
+
+#login .container h1{
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    font-weight: 600;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.section-header{
+    font-size: 36px;
+    margin-bottom: 16px;
+}
+#form{
+    margin-top: 30px;
+
+}
+#form label{
+    margin-bottom: 10px;
+    display: block;
+    font-size: 16px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+#form input{
+    height: 55px;
+    width: 100%;
+    padding: 0 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 16px;
+    color: #2c3e50;
+    background: #f8f9fa;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+#form input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+    background: white;
+    transform: translateY(-2px);
+}
+#form .submit{
+    margin: 30px 0;
+    text-align: center;
+}
+#form .submit button{
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 40px;
+    border-radius: 12px;
+    margin: 20px 0 15px;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
+#form .submit button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    animation: none;
+}
+#form .submit #signup{
+    font-size: 14px;
+    color: #6c757d;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+}
+#form .submit #signup:hover {
+    color: #4CAF50;
+}
+#form .submit #signup::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: #4CAF50;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+#form .submit #signup:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+.alert{
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 8px;
+    display: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: rgba(220, 53, 69, 0.1);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.alert.show {
+    display: block;
+}
+
+.phone-input-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.phone-prefix {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 16px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.phone-input-group input {
+    flex: 1;
+    margin-bottom: 0;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.phone-input-group input::placeholder {
+    color: #adb5bd;
+}
+
+.phone-input-group button {
+    padding: 0 25px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    min-width: 120px;
+    height: 48px;
+}
+
+.phone-input-group button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.phone-input-group button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+#otpSection {
+    margin-top: 20px;
+    padding: 25px;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease-out;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#otpSection.show {
+    opacity: 1;
+    transform: translateY(0);
+    border-color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.05);
+}
+
+.verification-toggle {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    justify-content: center;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.toggle-btn {
+    padding: 12px 25px;
+    border: none;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    font-weight: 500;
+    color: #6c757d;
+    position: relative;
+    overflow: hidden;
+}
+
+.toggle-btn:hover {
+    color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.toggle-btn.active {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.verification-section {
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+}
+
+/* Animation for verification sections */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.verification-section {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Success and Error Messages */
+.success-message,
+.error-message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 14px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.success-message {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.error-message {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+/* Loading State for Buttons */
+button.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+button.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disabled Button State */
+button:disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+    opacity: 0.7;
+}
+
+/* Input Focus States */
+#form input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+    background: white;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #login .container {
+        width: 90%;
+        padding: 30px 20px;
+    }
+
+    .verification-toggle {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .toggle-btn {
+        width: 100%;
+    }
+
+    .phone-input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .phone-prefix {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .phone-input-group input,
+    .phone-input-group button {
+        width: 100%;
+    }
+
+    .otp-input-group {
+        flex-direction: column;
+    }
+
+    .otp-input-group input {
+        font-size: 20px;
+        letter-spacing: 5px;
+    }
+
+    .success-message,
+    .error-message {
+        font-size: 13px;
+        padding: 10px 15px;
+    }
+}
+
+/* OTP Modal */
+.otp-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.otp-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease-out;
+}
+
+.otp-modal-content h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.otp-modal-content p {
+    color: #6c757d;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.otp-display {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 20px 0;
+    letter-spacing: 5px;
+    border: 2px dashed #4CAF50;
+}
+
+.otp-modal-content button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.otp-modal-content button:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* OTP Input Section */
+#otpSection {
+    margin-top: 20px;
+    padding: 25px;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease-out;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#otpSection.show {
+    opacity: 1;
+    transform: translateY(0);
+    border-color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.05);
+}
+
+.otp-input-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.otp-input-group input {
+    flex: 1;
+    text-align: center;
+    letter-spacing: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 12px;
+    height: 48px;
+}
+
+.otp-input-group input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+}
+
+/* Success and Error Messages */
+.success-message,
+.error-message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 14px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.success-message {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.error-message {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+/* Loading State for Buttons */
+button.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+button.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .otp-modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .otp-display {
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    .otp-input-group {
+        flex-direction: column;
+    }
+
+    .otp-input-group input {
+        font-size: 20px;
+    }
+}
