@@ -7,15 +7,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('./'));
-
-// Fast2SMS API configuration
-const FAST2SMS_API_KEY = process.env.FAST2SMS_API_KEY;
-const FAST2SMS_ROUTE = 'v3'; // Using v3 route for OTP
-
-if (!FAST2SMS_API_KEY) {
-    console.error('Missing required Fast2SMS API key in .env file');
-    process.exit(1);
-}
+// env 
+require('dotenv').config();
+const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 
 // Store OTPs (in production, use a proper database)
 const otpStore = new Map();
