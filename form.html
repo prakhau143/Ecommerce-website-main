@@ -11,7 +11,7 @@
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <link rel="icon" href="images/logowhite.jpeg" type="image/x-icon">
     <!-- css -->
-    <link rel="stylesheet" href="Style/login.css">
+    <link rel="stylesheet" href="Style/form.css">
     <link rel="stylesheet" href="Style/main.css">
     <!-- Google font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,42 +72,48 @@
         </nav>
     </header>
     <section id="login">
-       <div class="container">
-        <div class="section-header">
-            <h1>Welcome Back!</h1>
-            <p>Enter your email to receive a verification code</p>
-        </div>
-        <div id="form">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <div class="input-group">
-                    <input type="email" name="email" placeholder="your@email.com" id="email">
-                    <button type="button" id="sendOtpBtn">
-                        <span id="sendText">Send OTP</span>
-                        <div class="spinner" id="spinner"></div>
-                    </button>
-                </div>
-                <span id="invalidEmail" class="alert alert-error">Please enter a valid email address</span>
+        <div class="container">
+            <div class="section-header">
+                <h1>Complete Your Profile</h1>
+                <p>Please fill in your details to continue</p>
             </div>
-
-            <div id="otpSection" style="display: none;">
+            
+            <form id="userDetailsForm">
                 <div class="form-group">
-                    <label for="otp">Verification Code</label>
-                    <div class="input-group">
-                        <input type="text" name="otp" placeholder="Enter 6-digit code" id="otp" maxlength="6">
-                        <button type="button" id="verifyOtpBtn">Verify</button>
-                    </div>
-                    <span id="invalidOtp" class="alert alert-error">Invalid verification code</span>
-                    <span id="successMessage" class="alert alert-success" style="display: none;">✓ Verified successfully!</span>
-                    <button type="button" id="resendOtpBtn" class="btn-outline" style="display: none; margin-top: 1rem;">
-                        Resend Code (<span id="countdown">30</span>s)
-                    </button>
-                    <span class="countdown">Check your email for the verification code</span>
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe" required>
+                    <span id="nameError" class="alert alert-error">Please enter your full name</span>
                 </div>
-            </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+                    <span id="phoneError" class="alert alert-error">Please enter a valid phone number . Since we don't server out of India please try removing "+91"</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" rows="3" placeholder="123 Main St, City, Country" required></textarea>
+                    <span id="addressError" class="alert alert-error">Please enter your address</span>
+                </div>
+                
+                <button type="submit" id="submitBtn">
+                    <span id="submitText">Submit</span>
+                    <div class="spinner" id="submitSpinner"></div>
+                </button>
+                
+                <div id="formSuccess" class="alert alert-success" style="display: none; margin-top: 1rem;">
+                    Details submitted successfully! Check your email for confirmation.
+                </div>
+            </form>
         </div>
-       </div>
     </section>
+
 
     <!-- Confirmation Dialog -->
     <div class="dialog-overlay" id="confirmationDialog">

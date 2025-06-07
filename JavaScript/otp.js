@@ -1,310 +1,190 @@
-// Store OTP in memory (in a real application, this would be handled server-side)
-let currentOTP = null;
-let otpExpiryTime = null;
-let otpAttempts = 0;
-const MAX_OTP_ATTEMPTS = 3;
-const OTP_EXPIRY_MINUTES = 5;
-const RESEND_COOLDOWN_SECONDS = 60;
-let currentVerificationType = 'email';
-
-// Mock SMS Service (for demonstration purposes)
-class MockSMSService {
-    static async sendOTP(phoneNumber, otp) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // In a real application, this would be an API call to an SMS service
-        console.log(`Sending OTP ${otp} to ${phoneNumber}`);
-        
-        // For demo purposes, we'll show the OTP in a modal
-        this.showOTPModal(otp);
-        
-        return true;
-    }
-
-    static showOTPModal(otp) {
-        const modal = document.createElement('div');
-        modal.className = 'otp-modal';
-        modal.innerHTML = `
-            <div class="otp-modal-content">
-                <h3>Demo OTP</h3>
-                <p>In a real application, this OTP would be sent via SMS to your phone.</p>
-                <div class="otp-display">${otp}</div>
-                <button onclick="this.parentElement.parentElement.remove()">Close</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
+// Debugging helper
+function debugLog(message) {
+    console.log('[DEBUG]', message);
 }
 
-// Function to generate a random 6-digit OTP
+// Initialize EmailJS with your user ID
+(function() {
+    // Replace these with your actual EmailJS credentials
+    const emailjsUserId = 'NP2ZErhB-YRWGY114'; // Found in Account > API Keys
+    const emailjsServiceId = 'service_9r4j8p9'; // Found in Email Services
+    const emailjsTemplateId = 'template_gbd5llk'; // Found in Email Templates
+    
+    debugLog('Initializing EmailJS with User ID: ' + emailjsUserId);
+    emailjs.init(emailjsUserId);
+    
+    // Make these available globally for debugging
+    window.emailjsConfig = {
+        userId: emailjsUserId,
+        serviceId: emailjsServiceId,
+        templateId: emailjsTemplateId
+    };
+})();
+
+// Generate a random 6-digit OTP
 function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    debugLog('Generated OTP: ' + otp);
+    return otp;
 }
 
-// Function to validate email
-function validateEmail(email) {
+// DOM Elements
+const emailInput = document.getElementById('email');
+const sendOtpBtn = document.getElementById('sendOtpBtn');
+const sendText = document.getElementById('sendText');
+const spinner = document.getElementById('spinner');
+const otpSection = document.getElementById('otpSection');
+const otpInput = document.getElementById('otp');
+const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+const resendOtpBtn = document.getElementById('resendOtpBtn');
+const countdownEl = document.getElementById('countdown');
+const invalidEmail = document.getElementById('invalidEmail');
+const invalidOtp = document.getElementById('invalidOtp');
+const successMessage = document.getElementById('successMessage');
+const confirmationDialog = document.getElementById('confirmationDialog');
+const confirmEmail = document.getElementById('confirmEmail');
+const confirmSendBtn = document.getElementById('confirmSendBtn');
+const cancelSendBtn = document.getElementById('cancelSendBtn');
+
+// Variables
+let generatedOTP = '';
+let userEmail = '';
+let resendTimer;
+
+// Event Listeners
+sendOtpBtn.addEventListener('click', showConfirmationDialog);
+verifyOtpBtn.addEventListener('click', verifyOTP);
+resendOtpBtn.addEventListener('click', showConfirmationDialog);
+confirmSendBtn.addEventListener('click', sendOTP);
+cancelSendBtn.addEventListener('click', hideConfirmationDialog);
+
+// Show confirmation dialog
+function showConfirmationDialog() {
+    const email = emailInput.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
 
-// Function to validate phone number
-function validatePhone() {
-    const phoneInput = document.getElementById('phone');
-    const phoneError = document.getElementById('invalidPhone');
-    const sendOtpBtn = document.getElementById('sendOtpBtn');
-    
-    // Indian phone number validation (10 digits starting with 6-9)
-    const phoneRegex = /^[6-9]\d{9}$/;
-    
-    if (!phoneRegex.test(phoneInput.value)) {
-        phoneError.style.display = 'block';
-        sendOtpBtn.disabled = true;
-        return false;
-    } else {
-        phoneError.style.display = 'none';
-        sendOtpBtn.disabled = false;
-        return true;
+    if (!emailRegex.test(email)) {
+        invalidEmail.style.display = 'block';
+        emailInput.focus();
+        debugLog('Invalid email format');
+        return;
     }
+
+    invalidEmail.style.display = 'none';
+    userEmail = email;
+    confirmEmail.textContent = email;
+    confirmationDialog.style.display = 'flex';
+    debugLog('Showing confirmation dialog for email: ' + email);
 }
 
-// Function to format phone number as user types
-function formatPhoneNumber(input) {
-    // Remove any non-digit characters
-    let value = input.value.replace(/\D/g, '');
-    
-    // Limit to 10 digits
-    value = value.substring(0, 10);
-    
-    // Update input value
-    input.value = value;
-    
-    // Validate phone number
-    validatePhone();
+// Hide confirmation dialog
+function hideConfirmationDialog() {
+    confirmationDialog.style.display = 'none';
+    debugLog('Hiding confirmation dialog');
 }
 
-// Function to show success message
-function showSuccessMessage(message) {
-    const successMessage = document.createElement('div');
-    successMessage.className = 'success-message';
-    successMessage.textContent = message;
-    
-    const form = document.getElementById('form');
-    form.insertBefore(successMessage, form.firstChild);
-    
-    // Remove message after 3 seconds
-    setTimeout(() => {
-        successMessage.remove();
-    }, 3000);
-}
+// Send OTP
+function sendOTP() {
+    hideConfirmationDialog();
+    generatedOTP = generateOTP();
 
-// Function to show error message
-function showErrorMessage(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    document.querySelector('.phone-section').appendChild(errorDiv);
-    setTimeout(() => errorDiv.remove(), 3000);
-}
-
-// Function to update OTP input UI
-function updateOTPInputUI() {
-    const otpInput = document.getElementById('otp');
-    const otpSection = document.getElementById('otpSection');
-    const verifyBtn = document.getElementById('verifyOtpBtn');
-    
-    // Clear previous OTP input
-    otpInput.value = '';
-    
-    // Show OTP section with animation
-    otpSection.style.display = 'block';
-    otpSection.classList.add('show');
-    
-    // Focus on OTP input
-    setTimeout(() => otpInput.focus(), 500);
-}
-
-// Function to send OTP
-async function sendOTP() {
-    const phoneInput = document.getElementById('phone');
-    const sendOtpBtn = document.getElementById('sendOtpBtn');
-    const phoneError = document.getElementById('invalidPhone');
-    
-    try {
-        // Validate phone number
-        if (!validatePhone()) {
-            return;
-        }
-        
-        // Disable send button and show loading state
-        sendOtpBtn.disabled = true;
-        sendOtpBtn.classList.add('loading');
-        
-        // Send OTP request to server
-        const response = await fetch('http://localhost:3000/api/send-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                phoneNumber: phoneInput.value
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to send OTP');
-        }
-
-        // Show OTP input section
-        updateOTPInputUI();
-        
-        // Show success message
-        showSuccessMessage('OTP sent successfully!');
-        
-        // Start cooldown timer
-        startResendCooldown();
-        
-    } catch (error) {
-        phoneError.textContent = error.message;
-        phoneError.style.display = 'block';
-    } finally {
-        // Re-enable send button and remove loading state
-        sendOtpBtn.disabled = false;
-        sendOtpBtn.classList.remove('loading');
-    }
-}
-
-// Function to verify OTP
-async function verifyOTP() {
-    const otpInput = document.getElementById('otp');
-    const otpError = document.getElementById('invalidOtp');
-    const phoneInput = document.getElementById('phone');
-    const verifyBtn = document.getElementById('verifyOtpBtn');
-    
-    try {
-        // Validate OTP format
-        if (!/^\d{6}$/.test(otpInput.value)) {
-            throw new Error('Please enter a valid 6-digit OTP');
-        }
-        
-        // Disable verify button and show loading state
-        verifyBtn.disabled = true;
-        verifyBtn.classList.add('loading');
-        
-        const response = await fetch('http://localhost:3000/api/verify-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                phoneNumber: phoneInput.value,
-                otp: otpInput.value
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Verification failed');
-        }
-
-        // OTP is valid
-        otpError.style.display = 'none';
-        showSuccessMessage('Phone number verified successfully!');
-        
-        // Enable sign in button
-        document.getElementById('btn-login').disabled = false;
-        
-        // Store verified phone number
-        localStorage.setItem('phoneNumber', phoneInput.value);
-        
-        return true;
-    } catch (error) {
-        otpError.textContent = error.message;
-        otpError.style.display = 'block';
-        otpInput.value = '';
-        otpInput.focus();
-        return false;
-    } finally {
-        // Re-enable verify button and remove loading state
-        verifyBtn.disabled = false;
-        verifyBtn.classList.remove('loading');
-    }
-}
-
-// Function to start resend cooldown
-function startResendCooldown() {
-    const sendOtpBtn = document.getElementById('sendOtpBtn');
-    let timeLeft = RESEND_COOLDOWN_SECONDS;
-    
+    // Show loading state
+    sendText.style.display = 'none';
+    spinner.style.display = 'block';
     sendOtpBtn.disabled = true;
-    
-    const timer = setInterval(() => {
-        timeLeft--;
-        sendOtpBtn.textContent = `Resend OTP (${timeLeft}s)`;
+    debugLog('Preparing to send OTP to: ' + userEmail);
+
+    // Send via EmailJS
+    emailjs.send(window.emailjsConfig.serviceId, window.emailjsConfig.templateId, {
+        to_email: userEmail,
+        otp: generatedOTP
+    })
+    .then(function(response) {
+        debugLog('OTP sent successfully! Response: ', response);
         
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            sendOtpBtn.textContent = 'Send OTP';
-            sendOtpBtn.disabled = false;
+        // Show OTP section
+        otpSection.style.display = 'block';
+        otpInput.focus();
+        
+        // Hide send button, show resend button
+        sendOtpBtn.style.display = 'none';
+        resendOtpBtn.style.display = 'inline-flex';
+        
+        // Start resend timer
+        startResendTimer();
+    })
+    .catch(function(error) {
+        console.error("Failed to send OTP:", error);
+        alert("Failed to send verification code. Please check console for details and try again.");
+    })
+    .finally(function() {
+        // Reset button state
+        sendText.style.display = 'block';
+        spinner.style.display = 'none';
+        sendOtpBtn.disabled = false;
+    });
+}
+
+// Resend OTP timer
+function startResendTimer() {
+    let seconds = 30;
+    resendOtpBtn.disabled = true;
+    
+    debugLog('Starting resend timer (30 seconds)');
+    
+    clearInterval(resendTimer);
+    resendTimer = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = seconds;
+        
+        if (seconds <= 0) {
+            clearInterval(resendTimer);
+            resendOtpBtn.disabled = false;
+            resendOtpBtn.innerHTML = 'Resend Code';
+            debugLog('Resend timer expired');
         }
     }, 1000);
 }
 
-// Add event listeners when the document loads
-document.addEventListener('DOMContentLoaded', function() {
-    const phoneInput = document.getElementById('phone');
-    const otpInput = document.getElementById('otp');
-    const toggleButtons = document.querySelectorAll('.toggle-btn');
-    const signInBtn = document.getElementById('btn-login');
+// Verify OTP
+function verifyOTP() {
+    const enteredOTP = otpInput.value.trim();
+    debugLog('Verifying OTP. Entered: ' + enteredOTP + ', Expected: ' + generatedOTP);
     
-    // Initially disable sign in button
-    signInBtn.disabled = true;
-    
-    // Handle verification type toggle
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const type = this.dataset.type;
-            currentVerificationType = type;
-            
-            // Update active button
-            toggleButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Show/hide appropriate section
-            document.getElementById('emailSection').style.display = type === 'email' ? 'block' : 'none';
-            document.getElementById('phoneSection').style.display = type === 'phone' ? 'block' : 'none';
-            
-            // Hide OTP section when switching
-            document.getElementById('otpSection').style.display = 'none';
-        });
-    });
-    
-    // Format phone number as user types
-    phoneInput.addEventListener('input', function(e) {
-        formatPhoneNumber(this);
-    });
-    
-    // Only allow numbers in OTP input
-    otpInput.addEventListener('input', function(e) {
-        this.value = this.value.replace(/\D/g, '');
-        if (this.value.length === 6) {
-            verifyOTP();
-        }
-    });
-    
-    // Handle Enter key in OTP input
-    otpInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && this.value.length === 6) {
-            verifyOTP();
-        }
-    });
-    
-    // Add loading state to buttons
-    sendOtpBtn.addEventListener('click', function() {
-        this.classList.add('loading');
-        setTimeout(() => this.classList.remove('loading'), 1000);
-    });
-}); 
+    if (enteredOTP === generatedOTP) {
+        invalidOtp.style.display = 'none';
+        successMessage.style.display = 'block';
+        debugLog('OTP verification successful');
+        
+        // Disable OTP fields after successful verification
+        otpInput.disabled = true;
+        verifyOtpBtn.disabled = true;
+        resendOtpBtn.disabled = true;
+        
+        // Change button to indicate success
+        verifyOtpBtn.innerHTML = '✓ Verified';
+        verifyOtpBtn.style.background = 'var(--success)';
+        verifyOtpBtn.style.cursor = 'default';
+        
+        // Clear the timer
+        clearInterval(resendTimer);
+        countdownEl.parentElement.style.display = 'none';
+        
+        // Redirect to form.html after 1.5 seconds with email as parameter
+        setTimeout(() => {
+            window.location.href = `form.html?email=${encodeURIComponent(userEmail)}`;
+        }, 1500);
+    } else {
+        invalidOtp.style.display = 'block';
+        otpInput.focus();
+        // Shake animation for error
+        otpInput.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+            otpInput.style.animation = '';
+        }, 500);
+        debugLog('OTP verification failed');
+    }
+}
+
+// Debugging: Log all elements to console
+debugLog('All DOM elements loaded successfully');
