@@ -13,6 +13,38 @@
     --transition: all 0.3s ease;
 }
 
+.body_Container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.header_Container {
+    width: 100%;
+    display: flex;
+}
+
+.form_Container {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: fit-content;
+}
+
+.form_Container .container {
+    background-color: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 500px;
+    transition: var(--transition);
+}
+
 .section-header {
     text-align: center;
     margin-bottom: 2rem;

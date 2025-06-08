@@ -68,7 +68,7 @@ main{
     font-size: 20px;
 }
 /* --------------------------- header -------------------------------  */
-header{
+#header{
     width: 100%;
     z-index: 1000;
     /* position: fixed;
