@@ -6,9 +6,9 @@ function debugLog(message) {
 // Initialize EmailJS with your user ID
 (function() {
     // Replace these with your actual EmailJS credentials
-    const emailjsUserId = 'NP2ZErhB-YRWGY114'; // Found in Account > API Keys
-    const emailjsServiceId = 'service_9r4j8p9'; // Found in Email Services
-    const emailjsTemplateId = 'template_gbd5llk'; // Found in Email Templates
+    const emailjsUserId = 'Pf4cZAaeYv4qn7WbF'; // Found in Account > API Keys
+    const emailjsServiceId = 'service_n9t5xtr'; // Found in Email Services
+    const emailjsTemplateId = 'template_gx9kj67'; // Found in Email Templates
     
     debugLog('Initializing EmailJS with User ID: ' + emailjsUserId);
     emailjs.init(emailjsUserId);
