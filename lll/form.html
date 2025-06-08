@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --success: #06d6a0;
+            --error: #ef476f;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border: #e9ecef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        .container {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            transition: var(--transition);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .section-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 0.25rem;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: var(--text-light);
+            opacity: 0.6;
+        }
+        
+        input[readonly] {
+            background-color: #f8f9fa;
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+        
+        button {
+            padding: 0.875rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .alert {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .alert-error {
+            color: var(--error);
+        }
+        
+        .alert-success {
+            color: var(--success);
+        }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 1.75rem;
+            }
+            
+            .section-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-header">
+            <h1>Complete Your Profile</h1>
+            <p>Please fill in your details to continue</p>
+        </div>
+        
+        <form id="userDetailsForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required>
+                <span id="nameError" class="alert alert-error">Please enter your full name</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+                <span id="phoneError" class="alert alert-error">Please enter a valid phone number . Since we don't server out of India please try removing "+91"</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" placeholder="123 Main St, City, Country" required></textarea>
+                <span id="addressError" class="alert alert-error">Please enter your address</span>
+            </div>
+            
+            <button type="submit" id="submitBtn">
+                <span id="submitText">Submit</span>
+                <div class="spinner" id="submitSpinner"></div>
+            </button>
+            
+            <div id="formSuccess" class="alert alert-success" style="display: none; margin-top: 1rem;">
+                Details submitted successfully! Check your email for confirmation.
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Initialize EmailJS with your user ID
+        (function() {
+            // Use the same EmailJS credentials as in the OTP form
+            emailjs.init('NP2ZErhB-YRWGY114');
+        })();
+
+        // Get the email from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userEmail = urlParams.get('email');
+        
+        // Set the email field value
+        document.getElementById('email').value = userEmail || '';
+        
+        // Form elements
+        const form = document.getElementById('userDetailsForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        const formSuccess = document.getElementById('formSuccess');
+        
+        // Form validation and submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Validate name
+            const name = document.getElementById('name').value.trim();
+            if (name === '') {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('nameError').style.display = 'none';
+            }
+            
+            // Validate phone
+            const phone = document.getElementById('phone').value.trim();
+            const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('phoneError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('phoneError').style.display = 'none';
+            }
+            
+            // Validate address
+            const address = document.getElementById('address').value.trim();
+            if (address === '') {
+                document.getElementById('addressError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('addressError').style.display = 'none';
+            }
+            
+            if (isValid) {
+                // Show loading state
+                submitText.textContent = 'Submitting...';
+                submitSpinner.style.display = 'block';
+                submitBtn.disabled = true;
+                
+                // Prepare the email content
+                const templateParams = {
+                    to_email: 'prakharsaxena3416@gmail.com', // Change this to your receiving email
+                    from_name: 'Form Submission',
+                    user_name: name,
+                    user_email: userEmail,
+                    user_phone: phone,
+                    user_address: address,
+                    reply_to: userEmail
+                };
+                
+                // Send the email using EmailJS
+                emailjs.send('service_9r4j8p9', 'template_r5zopyo', templateParams)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        
+                        // Show success message
+                        formSuccess.style.display = 'block';
+                        submitText.textContent = 'Submitted';
+                        submitSpinner.style.display = 'none';
+                        
+                        // Reset form (except email)
+                        document.getElementById('name').value = '';
+                        document.getElementById('phone').value = '';
+                        document.getElementById('address').value = '';
+                        
+                        // Disable submit button
+                        submitBtn.disabled = true;
+                        submitBtn.style.backgroundColor = 'var(--success)';
+                    })
+                    .catch(function(error) {
+                        console.log('FAILED...', error);
+                        alert('Failed to submit form. Please try again later.');
+                        
+                        // Reset button state
+                        submitText.textContent = 'Submit';
+                        submitSpinner.style.display = 'none';
+                        submitBtn.disabled = false;
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
