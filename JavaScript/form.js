@@ -87,6 +87,10 @@ form.addEventListener('submit', function(e) {
                 // Disable submit button
                 submitBtn.disabled = true;
                 submitBtn.style.backgroundColor = 'var(--success)';
+
+                setTimeout(() => {
+                    window.location.href = `index.html?email=${encodeURIComponent(userEmail)}`;
+                }, 1500);
             })
             .catch(function(error) {
                 console.log('FAILED...', error);
